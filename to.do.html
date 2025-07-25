@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .todo-container {
+      background-color: rgb(255, 255, 255);
+      border-radius: 8px;
+      padding: 20px;
+      width: 400px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .todo-container h1 {
+      text-align: center;
+      color: #333;
+      font-size: 24px;
+    }
+    .input-wrapper {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+    .input-wrapper input,
+    .input-wrapper input[type="datetime-local"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    .input-wrapper button {
+      padding: 10px;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .input-wrapper button:hover {
+      background-color: #45a049;
+    }
+    .task-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .task-item {
+      background-color: #f9f9f9;
+      margin: 8px 0;
+      padding: 15px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    .task-item.completed {
+      background-color: #d4edda;  /* Greenish background for completed tasks */
+      text-decoration: line-through;
+    }
+    .task-item button {
+      background-color: #e74c3c;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .task-item button:hover {
+      background-color: #c0392b;
+    }
+    .task-item .status {
+      font-weight: bold;
+      color: #f39c12;  /* Orange color for Pending */
+    }
+    .task-item .status.completed {
+      color: #28a745;  /* Green color for Completed */
+    }
+    .task-item .date-time {
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="todo-container">
+    <h1>To-Do List</h1>
+    <div class="input-wrapper">
+      <input type="text" id="taskInput" placeholder="Enter a task...">
+      <input type="datetime-local" id="taskDateTime">
+      <button onclick="addTask()">Add Task</button>
+    </div>
+    <ul id="taskList" class="task-list"></ul>
+  </div>
+
+  <script>
+    function addTask() {
+      // Get the task text and custom date/time from the input fields
+      const taskInput = document.getElementById('taskInput');
+      const taskText = taskInput.value.trim();
+      const dateTimeInput = document.getElementById('taskDateTime');
+      const customDateTime = dateTimeInput.value || new Date().toLocaleString(); // Default to current time if empty
+
+      // If input is empty, show alert and return
+      if (taskText === "") {
+        alert("Please enter a task!");
+        return;
+      }
+
+      // Create new list item (task)
+      const li = document.createElement('li');
+      li.classList.add('task-item');
+
+      // Add task text as a contenteditable span
+      const span = document.createElement('span');
+      span.textContent = taskText;
+      span.contentEditable = true; // Make the task text editable
+      span.classList.add('task-text');
+      li.appendChild(span);
+
+      // Add the status
+      const status = document.createElement('span');
+      status.classList.add('status');
+      status.textContent = "Pending";  // Initial status is pending
+      li.appendChild(status);
+
+      // Add custom date/time of task
+      const dateTimeSpan = document.createElement('span');
+      dateTimeSpan.classList.add('date-time');
+      dateTimeSpan.textContent = `Set for: ${customDateTime}`;
+      dateTimeSpan.onclick = function () {
+        const newDateTime = prompt("Edit the date and time", customDateTime);
+        if (newDateTime !== null && newDateTime.trim() !== "") {
+          dateTimeSpan.textContent = `Set for: ${newDateTime.trim()}`;
+        }
+      };
+      li.appendChild(dateTimeSpan);
+
+      // Add Edit Button (for task text)
+      const editButton = document.createElement('button');
+      editButton.textContent = "Save Edit";
+      editButton.onclick = function () {
+        const newText = span.textContent.trim();
+        if (newText === "") {
+          alert("Task description cannot be empty!");
+        } else {
+          span.textContent = newText; // Save the new task text
+        }
+      };
+      li.appendChild(editButton);
+
+      // Add Delete Button
+      const deleteButton = document.createElement('button');
+      deleteButton.textContent = "Delete";
+      deleteButton.onclick = function () {
+        li.remove();
+        alert("Task has been deleted!");
+      };
+      li.appendChild(deleteButton);
+
+      // Add Mark as Completed Button
+      const completeButton = document.createElement('button');
+      completeButton.textContent = "Mark as Completed";
+      completeButton.onclick = function () {
+        li.classList.toggle('completed');
+        if (li.classList.contains('completed')) {
+          status.textContent = "Completed";
+          status.classList.add('completed');
+          alert("Task is completed!");
+        } else {
+          status.textContent = "Pending";
+          status.classList.remove('completed');
+        }
+      };
+      li.appendChild(completeButton);
+
+      // Append task to the task list
+      const taskList = document.getElementById('taskList');
+      taskList.appendChild(li);
+
+      // Clear input fields after adding task
+      taskInput.value = "";
+      dateTimeInput.value = "";
+    }
+  </script>
+
+</body>
+</html>

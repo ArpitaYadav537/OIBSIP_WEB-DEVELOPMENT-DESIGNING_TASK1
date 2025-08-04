@@ -17,4 +17,14 @@
   ▶️ How to Use 
 
   1. Clone or download this repository.
-  2. Open the "index.html" file 
+  2. Open the "index.html" file in your broswer.
+  3. Start calculating.
+     
+📂 Project Structure
+
+Calculator/
+---index.html    # Main HTML file
+---Style.css     # Styling  with CSS 
+---sript.js      # JavaScript logic 
+---README.md     # This file
+
